@@ -19,7 +19,7 @@
         </div>
       </div>
     </div>
-    <audio id="myAudio" ref="audio" src="http://140.143.132.225/love/pdd.mp3" autoplay muted></audio>
+    <audio id="myAudio" ref="audio" src="http://140.143.132.225/love/pdd.mp3" autoplay muted loop></audio>
   </div>
 </template>
 
