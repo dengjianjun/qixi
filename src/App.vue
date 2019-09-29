@@ -19,11 +19,14 @@
         </div>
       </div>
     </div>
-    <audio id="myAudio" ref="audio" src="http://140.143.132.225/love/pdd.mp3" autoplay muted loop></audio>
+    <audio id="myAudio" ref="audio" src="./assets/m.mp3" autoplay muted loop></audio>
   </div>
 </template>
 
 <script>
+// import translate from "google-translate-open-api"
+import pinyin from 'chinese-to-pinyin'
+import jiantifanti from 'jiantifanti'
 
 export default {
   name: 'app',
@@ -32,24 +35,32 @@ export default {
       love: [],
       timer: {},
       showAlt: false,
-      status: 0
+      status: 0,
+      arr: []
     }
   },
   mounted () {
     this.love = []
     this.timer = {}
+    const name = getUrlParam('name') || '王语嫣'
+    document.title = name+'，我爱你'
+    const pyName = pinyin(name,{removeTone: true})
+    const trName = jiantifanti.traditionalized(name)
     let msg = {
-      2000: '张小慧，我爱你！',
-      3000: 'Zhang Xiaohui, I love you! (英语)',
-      6000: '張小慧、愛しています (日语)',
-      8000: 'Zhang Xiaohui, ich liebe dich! (德语)',
-      10000: 'Чжан сяохуэй, я люблю тебя! (俄语)',
-      12000: 'Zhang Xiaohui, ti amo! (意大利语)',
-      13000: '¡Zhang Xiaohui, te amo! (西班牙语)',
-      16000: '장소혜,나 사랑해요! (韩语)',
-      18000: 'Zhang Xiaohui, jeg elsker dig! (丹麦语)',
-      20000: 'Zhang Xiaohui, σ \'αγαπώ! (希腊语)'
+      2000: name+'，我爱你！',
+      3000: pyName+', I love you! (英语)',
+      6000: name+'、愛しています (日语)',
+      8000: pyName+', ich liebe dich! (德语)',
+      10000: pyName+', я люблю тебя! (俄语)',
+      12000: pyName+', ti amo! (意大利语)',
+      13000: pyName+', te amo! (西班牙语)',
+      16000: name+',나 사랑해요! (韩语)',
+      18000: pyName+', jeg elsker dig! (丹麦语)',
+      20000: pyName+', σ \'αγαπώ! (希腊语)'
     }
+  //   this.getText()
+
+
     let ref = this
     for (let key in msg) {
       let t = setTimeout(function () {
@@ -73,7 +84,27 @@ export default {
     },
     disagree: function () {
       this.showAlt = true
-    }
+    },
+    // async getText(){
+    //   const arr = [
+    //   {time:3000,text:', I love you! (英语)',lang:'en'},
+    //   {time:6000,text:'、愛しています (日语)',lang:'ja'},
+    //   {time:8000,text:', ich liebe dich! (德语)',lang:'de'},
+    //   {time:10000,text:', я люблю тебя! (俄语)',lang:'ru'},
+    //   {time:12000,text:', ti amo! (意大利语)',lang:'it'},
+    //   {time:13000,text:', te amo! (西班牙语)',lang:'es'},
+    //   {time:16000,text:',나 사랑해요! (韩语)',lang:'ko'},
+    //   {time:18000,text:', jeg elsker dig! (丹麦语)',lang:'da'},
+    //   {time:20000,text:', σ \'αγαπώ! (希腊语)',lang:'el'}
+    // ]
+    // for (let index = 0; index < arr.length; index++) {
+    //   const element = arr.length; index[index];
+    //   const {text} = await translate('Hello world', {to: 'es'});
+    //   element.text = text+element.text;
+    // }
+    
+    // this.arr = arr
+    // }
   },
   watch: {
     status (val, oldVal) {
@@ -92,6 +123,14 @@ export default {
       }
     }
   }
+}
+
+
+//获取url中的参数
+function getUrlParam(name) {
+    const reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+    const r = window.location.search.substr(1).match(reg);  //匹配目标参数
+    if (r != null) return decodeURI(r[2]); return null; //返回参数值
 }
 </script>
 
