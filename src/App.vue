@@ -24,13 +24,13 @@
 </template>
 
 <script>
-// import translate from "google-translate-open-api"
+// import translate from 'google-translate-open-api'
 import pinyin from 'chinese-to-pinyin'
 import jiantifanti from 'jiantifanti'
 
 export default {
   name: 'app',
-  data () {
+  data() {
     return {
       love: [],
       timer: {},
@@ -39,31 +39,33 @@ export default {
       arr: []
     }
   },
-  mounted () {
+  mounted() {
     this.love = []
     this.timer = {}
     const name = getUrlParam('name') || '王语嫣'
-    document.title = name+'，我爱你'
-    const pyName = pinyin(name,{removeTone: true})
+    document.title = name + '，我爱你'
+    // const tempName = pinyin(name, { removeTone: true })
+    let pyName = this.getEnName(name)
+
+    pyName = this.getEnName(name)
     const trName = jiantifanti.traditionalized(name)
     let msg = {
-      2000: name+'，我爱你！',
-      3000: pyName+', I love you! (英语)',
-      6000: name+'、愛しています (日语)',
-      8000: pyName+', ich liebe dich! (德语)',
-      10000: pyName+', я люблю тебя! (俄语)',
-      12000: pyName+', ti amo! (意大利语)',
-      13000: pyName+', te amo! (西班牙语)',
-      16000: name+',나 사랑해요! (韩语)',
-      18000: pyName+', jeg elsker dig! (丹麦语)',
-      20000: pyName+', σ \'αγαπώ! (希腊语)'
+      2000: name + '，我爱你！',
+      3000: pyName + ', I love you! (英语)',
+      6000: trName + '、愛しています (日语)',
+      8000: pyName + ', ich liebe dich! (德语)',
+      10000: pyName + ', я люблю тебя! (俄语)',
+      12000: pyName + ', ti amo! (意大利语)',
+      13000: pyName + ', te amo! (西班牙语)',
+      16000: trName + ',나 사랑해요! (韩语)',
+      18000: pyName + ', jeg elsker dig! (丹麦语)',
+      20000: pyName + ", σ 'αγαπώ! (希腊语)"
     }
-  //   this.getText()
-
+    //   this.getText()
 
     let ref = this
     for (let key in msg) {
-      let t = setTimeout(function () {
+      let t = setTimeout(function() {
         ref.love.push(msg[key])
         delete ref.timer[key]
       }, key)
@@ -71,20 +73,34 @@ export default {
     }
   },
   methods: {
-    play(){
+    play() {
       this.$refs.audio.muted = false
       this.$refs.audio.play()
     },
-    agree: function () {
+    agree: function() {
       this.$toast({
         icon: 'none',
         text: '小姐姐，晚上下班后一起约会吧！',
         duration: 3000
       })
     },
-    disagree: function () {
+    disagree: function() {
       this.showAlt = true
     },
+    getEnName(name) {
+      const tempName = pinyin(name, { removeTone: true })
+      const names = tempName.split(' ')
+      const firstName = names[0]
+      let pyName = firstLetterUpperCase(firstName)
+      names.slice(1).forEach((x, i) => {
+        if (i === 0) {
+          pyName += ' ' + firstLetterUpperCase(x)
+        } else {
+          pyName += x
+        }
+      })
+      return pyName
+    }
     // async getText(){
     //   const arr = [
     //   {time:3000,text:', I love you! (英语)',lang:'en'},
@@ -97,17 +113,17 @@ export default {
     //   {time:18000,text:', jeg elsker dig! (丹麦语)',lang:'da'},
     //   {time:20000,text:', σ \'αγαπώ! (希腊语)',lang:'el'}
     // ]
-    // for (let index = 0; index < arr.length; index++) {
-    //   const element = arr.length; index[index];
-    //   const {text} = await translate('Hello world', {to: 'es'});
-    //   element.text = text+element.text;
+    // for (let index = 0 index < arr.length index++) {
+    //   const element = arr.length index[index]
+    //   const {text} = await translate('Hello world', {to: 'es'})
+    //   element.text = text+element.text
     // }
-    
+
     // this.arr = arr
     // }
   },
   watch: {
-    status (val, oldVal) {
+    status(val, oldVal) {
       if (val === 1) {
         this.$toast({
           icon: 'none',
@@ -125,12 +141,22 @@ export default {
   }
 }
 
-
 //获取url中的参数
 function getUrlParam(name) {
-    const reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
-    const r = window.location.search.substr(1).match(reg);  //匹配目标参数
-    if (r != null) return decodeURI(r[2]); return null; //返回参数值
+  const reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)') //构造一个含有目标参数的正则表达式对象
+  const r = window.location.search.substr(1).match(reg) //匹配目标参数
+  if (r != null) return decodeURI(r[2])
+  return null //返回参数值
+}
+
+function firstLetterUpperCase(str) {
+  let result = ''
+  if (str.length > 1) {
+    result = str.slice(0, 1).toUpperCase() + str.slice(1)
+  } else if (str.length === 1) {
+    result = str.toUpperCase()
+  }
+  return result
 }
 </script>
 
